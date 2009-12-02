@@ -1,0 +1,3 @@
+$ erl
+> c(manager).
+> manager:start().
