@@ -11,5 +11,8 @@ get_lines_from_file(Device, Accum)->
 	    file:close(Device),
 	    Accum;
 	Line->
-	    get_lines_from_file(Device, Accum ++ [Line])
+	    get_lines_from_file(Device, Accum ++ [process_url(Line)])
     end.
+
+process_url(Url)->
+    lists:subtract(Url, "\n").
