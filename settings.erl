@@ -2,7 +2,6 @@
 -export([read/0]).
 
 read()->
-    io:format("here~n"),
     {ok, Device} = file:open("links", [read]),
     get_lines_from_file(Device, []).
 
