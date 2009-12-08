@@ -1,8 +1,8 @@
 -module(web_crawler).
 -import(xml_agregator).
--export([download_xml/1]).
+-export([download/1]).
 
-download_xml(Url)->
+download(Url)->
     ibrowse:start(),
     io:format("~p~n", [Url]),
     {ok, _StatusCode, _Headers, WebPageText} = ibrowse:send_req(Url, [], get),
