@@ -4,7 +4,7 @@
 
 download(Url)->
     ibrowse:start(),
-    io:format("~p~n", [Url]),
+    io:format("web: ~p~n", [Url]),
     {ok, _StatusCode, _Headers, WebPageText} = ibrowse:send_req(Url, [], get),
     xml_agregator:process_xml(WebPageText).
 
