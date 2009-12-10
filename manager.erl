@@ -13,3 +13,5 @@ process_url_list([T|H])->
     process_url_list(H);
 process_url_list([]) ->
     io:format("end~n").
+
+
