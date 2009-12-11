@@ -1,45 +1,42 @@
 -module(settings).
 -export([read/0]).
+-import(string_split).
 
 read()->
     {ok, Device} = file:open("links", [read]),
-    get_lines_from_file(Device, []).
+    [Currency, Start, Finish] = get_lines_from_file(Device, [], 0, 0),
+    create_url_list(Currency, Start, Finish, []).
 
-get_lines_from_file(Device, Accum)->
+get_lines_from_file(Device, Currency, Start, Finish)->
     case io:get_line(Device, "") of
 	eof->
 	    file:close(Device),
-	    Accum;
+	    [Currency, Start, Finish];
 	Line->
-	    Url = process_config_line(Line),
-	    case (Url) of
-		"empty" ->
-		    get_lines_from_file(Device, Accum);
+	    [Parm, _, Value] = process_config_line(Line),
+	    case (Parm) of
+		"Code" ->
+		    get_lines_from_file(Device, Currency ++ [Value], Start, Finish);
+		"Start" ->
+		    get_lines_from_file(Device, Currency, Value, Finish);
+		"Finish" ->
+		    get_lines_from_file(Device, Currency, Start, Value);
 		_ ->
-		    get_lines_from_file(Device, Accum ++ [Url])	       
+		    get_lines_from_file(Device, Currency, Start, Finish)
 	    end
     end.
-
-% < -- regexp split 
-regexp_loop(Str, Parts, Index, []) ->
-    lists:reverse([string:substr(Str, Index)] ++ Parts);
-regexp_loop(Str, Parts, Index, Rem_Matches) ->
-    {NextPt,PtLen} = hd(Rem_Matches),
-    regexp_loop( Str, [ string:substr(Str, NextPt, PtLen),
-                        string:substr(Str, Index, NextPt - Index)]
-                      ++ Parts, NextPt + PtLen,
-                      tl(Rem_Matches) ).
-regexp_split_inclusive(Str, Regex) ->
-    {match, Matches} = re:matches(Str, Regex),
-    regexp_loop(Str, [], 1, Matches).
-% -->
     
 process_config_line(Line)->
-    L1 = lists:subtract(Line, "\n"),
-    create_url(regexp_split_inclusive(L1, "=+")).
+    case Line of
+	"\n"->
+	    ["empty", 0, "empty"];
+	_ ->
+	    L1 = lists:subtract(Line, "\n"),
+	    string_split:split(L1, "=+")
+    end.
 
-create_url([[]])->
-    "empty";
-create_url([_, _, Value])->
-    "http://www.cbr.ru/scripts/XML_dynamic.asp?date_req1=01/12/2009&date_req2=06/12/2009&VAL_NM_RQ=" ++ Value.
-    
+create_url_list([H|T], Start, Finish, Urls)->
+    Url = "http://www.cbr.ru/scripts/XML_dynamic.asp?date_req1=" ++ Start ++ "&date_req2=" ++ Finish ++ "&VAL_NM_RQ=" ++ H,
+    create_url_list(T, Start, Finish, Urls ++ [Url]);
+create_url_list([], Start, Finish, Urls) ->
+    Urls.
