@@ -8,19 +8,19 @@ start_agregator()->
     spawn(fun prepare_agregator/0).
 
 prepare_agregator()->
-    loop_agregator().
+    loop_agregator(dict:new()).
 
-loop_agregator()->
+loop_agregator(Dict)->
     receive
 	{From, {process, {Currency, Data}}}->
 	    io:format("currency: ~p~n", [Currency]),
 	    io:format("here: ~p~n", [Data]),
 	    From ! {self(), "print"},
-	    loop_agregator();
+	    loop_agregator(dict:append(Currency, Data, Dict));
 	{From, Other}->
 	    io:format("Invalid input in agregator ~p~n", [Other]),
 	    From ! {self(), {error,Other}},
-	    loop_agregator()
+	    loop_agregator(Dict)
     end.
 
 agregator_rpc(Pid, Data)->
