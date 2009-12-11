@@ -37,6 +37,6 @@ process_config_line(Line)->
 
 create_url_list([H|T], Start, Finish, Urls)->
     Url = "http://www.cbr.ru/scripts/XML_dynamic.asp?date_req1=" ++ Start ++ "&date_req2=" ++ Finish ++ "&VAL_NM_RQ=" ++ H,
-    create_url_list(T, Start, Finish, Urls ++ [Url]);
+    create_url_list(T, Start, Finish, Urls ++ [{H, Url}]);
 create_url_list([], Start, Finish, Urls) ->
     Urls.

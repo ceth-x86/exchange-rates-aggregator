@@ -1,5 +1,5 @@
 -module(ex_agregator).
--export([register_agregator/0, process/2]).
+-export([register_agregator/0, process/3]).
 
 register_agregator()->
     register(agregator, start_agregator()).
@@ -12,7 +12,8 @@ prepare_agregator()->
 
 loop_agregator()->
     receive
-	{From, {process, Data}}->
+	{From, {process, {Currency, Data}}}->
+	    io:format("currency: ~p~n", [Currency]),
 	    io:format("here: ~p~n", [Data]),
 	    From ! {self(), "print"},
 	    loop_agregator();
@@ -29,7 +30,7 @@ agregator_rpc(Pid, Data)->
 	    Responce
     end.
 
-process(Pid, Data)->
-    agregator_rpc(Pid, {process, Data}).
+process(Pid, Currency, Data)->
+    agregator_rpc(Pid, {process, {Currency, Data}}).
 
     
