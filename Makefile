@@ -1,6 +1,6 @@
 ERLC = erlc
 
-all: manager.beam settings.beam web_crawler.beam xml_agregator.beam ex_agregator.beam string_split.beam publisher.beam
+all: manager.beam settings.beam web_crawler.beam xml_agregator.beam ex_agregator.beam string_split.beam publisher.beam serializator.beam
 
 manager.beam : manager.erl
 	$(ERLC) manager.erl
@@ -22,6 +22,9 @@ string_split.beam: string_split.erl
 
 publisher.beam: publisher.erl
 	$(ERLC) publisher.erl
+
+serializator.beam: serializator.erl
+	$(ERLC) serializator.erl
 
 clean: 
 	-rm *.beam

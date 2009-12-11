@@ -2,7 +2,10 @@
 -export([to_xml/1]).
 
 to_xml(Dict)->
-    "<Rates>" ++ to_xml_currency(dict:to_list(Dict), []) ++ "</Rates>".
+    xml_header() ++ "<Rates>" ++ to_xml_currency(dict:to_list(Dict), []) ++ "</Rates>".
+
+xml_header()->
+    "<?xml version='1.0'?>".
 
 to_xml_currency([H|T], Acc)->
     {Currency, [Rates]} = H,    

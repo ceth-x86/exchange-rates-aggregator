@@ -3,14 +3,17 @@
 -import(web_crawler).
 -import(ex_agregator).
 -import(publisher).
+-import(serializator).
 -export([start/0]).
 
 start()->
     ex_agregator:register_agregator(),
     process_url_list(settings:read()),
-    publisher:to_xml(
-      ex_agregator:get_result(agregator)
-     ).
+    serializator:to_file(
+      publisher:to_xml(
+	ex_agregator:get_result(agregator)
+       ), 
+      "result.xml").
 
 process_url_list([{Currency, Url}|H])->
     ex_agregator:process(agregator, Currency, web_crawler:download(Url)),
