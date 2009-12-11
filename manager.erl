@@ -6,7 +6,9 @@
 
 start()->
     ex_agregator:register_agregator(),
-    process_url_list(settings:read()).
+    process_url_list(settings:read()),
+    Result = ex_agregator:get_result(agregator),
+    io:format("~p~n", [Result]).
 
 process_url_list([{Currency, Url}|H])->
     ex_agregator:process(agregator, Currency, web_crawler:download(Url)),
