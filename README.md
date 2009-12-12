@@ -1,6 +1,6 @@
 # Description
 
-This is Erlang script which reads config file:
+This is Erlang script which reads config file looks like:
 
     Start=01/12/2009
     Finish=06/12/2009
